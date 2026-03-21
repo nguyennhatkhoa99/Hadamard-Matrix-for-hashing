@@ -8,11 +8,34 @@ import torch
 import numpy as np
 import logging
 from typing import Optional, Callable, Tuple, Union
-from ..data_list import ImageList, make_dataset, default_loader
+from PIL import Image
 from .generator import HashCenterGenerator
 from .calculator import CentroidCalculator
 
 logger = logging.getLogger(__name__)
+
+
+def _pil_loader(path):
+    with open(path, 'rb') as f:
+        with Image.open(f) as img:
+            return img.convert('RGB')
+
+
+# Local copy — avoids circular / relative import from data_list
+def make_dataset(image_list, labels):
+    if labels:
+        len_ = len(image_list)
+        images = [(image_list[i].strip(), labels[i, :]) for i in range(len_)]
+    else:
+        if len(image_list[0].split()) > 2:
+            images = [(val.split()[0], np.array([int(la) for la in val.split()[1:]])) for val in image_list]
+        else:
+            images = [(val.split()[0], int(val.split()[1])) for val in image_list]
+    return images
+
+
+# Re-export for backward compat
+default_loader = _pil_loader
 
 
 class HashCenterDataset(torch.utils.data.Dataset):

@@ -9,8 +9,8 @@ import torch.utils.data as data
 import os
 import os.path
 
-# Import HashCenterDataset from hash_center module
-from hash_center import HashCenterDataset
+# HashCenterDataset lives in hash_center.dataset — import it from there directly
+# e.g.  from hash_center import HashCenterDataset
 
 def make_dataset(image_list, labels):
     if labels:  # labels=None for imagenet
