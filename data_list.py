@@ -9,8 +9,12 @@ import torch.utils.data as data
 import os
 import os.path
 
-# Import HashCenterDataset from hash_center module
-from hash_center import HashCenterDataset
+# Lazy import to avoid circular dependency
+# Use: from hash_center import HashCenterDataset
+# HashCenterDataset is re-exported here for backward compatibility
+def _get_hash_center_dataset():
+    from hash_center import HashCenterDataset
+    return HashCenterDataset
 
 def make_dataset(image_list, labels):
     if labels:  # labels=None for imagenet
@@ -102,4 +106,4 @@ class ImageList(object):
 
 
 # Module exports
-__all__ = ['ImageList', 'HashCenterDataset', 'make_dataset', 'default_loader', 'pil_loader']
+__all__ = ['ImageList', 'make_dataset', 'default_loader', 'pil_loader']
